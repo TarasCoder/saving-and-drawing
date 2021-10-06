@@ -11,9 +11,11 @@
   var showInConsole = document.getElementById('showConsole');
   var cancelButton = document.getElementById('clear');
   var saveToCompCurrent = document.getElementById('saveToCompCurrent');
-  var saveToCompFromCF = document.getElementById('saveToCompFromCF');
-  var showCF = document.getElementById('showCF');
-  var showCF_div = document.querySelector('.showCF_div');
+  var saveToCompFromLS = document.getElementById('saveToCompFromLS');
+  var saveToLocalStorage = document.getElementById('saveToLocalStorage');
+  
+  var showLS = document.getElementById('showLS');
+  var showLS_div = document.querySelector('.showLS_div');
   
   saveToCompCurrent.addEventListener('click', function () {
     var data = signaturePad.toDataURL('image/png');
@@ -24,37 +26,42 @@
     console.log("save current pic");
   });
 
-  saveToCompFromCF.addEventListener('click', function () {
-    var download = document.createElement('a');
-    download.href = "[TEST_SIGNATURE]";
-    download.download = 'signature-Test-CF.png';
-    download.click();  
-    console.log("save pic from CF");
+  saveToCompFromLS.addEventListener('click', function () {
+    let lsItem = localStorage.getItem("imageBase64code");
+    if(lsItem){
+        var download = document.createElement('a');
+        download.href = lsItem;
+        download.download = 'signature-Test-CF.png';
+        download.click();  
+        console.log("save pic from CF");
+    } else {
+        alert("Local storage is empty. Please create first of all record there!");
+    }
   });
   
-  showCF.addEventListener('click', function () {
-    //   Representation of signature to web page
-    //   EXAMPLE: <img src="[TEST_SIGNATURE]" />
+  showLS.addEventListener('click', function () {
+    let lsItem = localStorage.getItem("imageBase64code");
+    if(lsItem){
     let img = document.createElement("img");
     img.classList.add("imgCF");
-    img.setAttribute("src", "[TEST_SIGNATURE]");
-    document.querySelector(".showCF_div").append(img);
-    showCF_div.style.backgroundColor = 'white';
+    img.setAttribute("src", lsItem);
+    document.querySelector(".showLS_div").append(img);
+    showLS_div.style.backgroundColor = 'white';
+    } else {
+        alert("Local storage is empty. Please create first of all record there!");
+    }
   });
-  
 
   showInConsole.addEventListener('click', function () {
     var data = signaturePad.toDataURL('image/png');
     console.log(data);
-    
-    // Saving actual picture of image to local mashine!!!
-    // var download = document.createElement('a');
-    // download.href = data;
-    // download.download = 'signature-Test.png';
-    // download.click();  
-  
-    // Saving data to CF
-    $(".mainInput input").attr("value", data);
+  });
+
+  saveToLocalStorage.addEventListener('click', function () {
+    var data = signaturePad.toDataURL('image/png');
+    localStorage.setItem("imageBase64code", data);
+    alert("Data succesfully saved to Local Storage. You can retrieve it by pressing on specific button.")
+    location.reload();
   });
   
   cancelButton.addEventListener('click', function () {
